@@ -23,31 +23,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// Main route to get stock data
-app.get("/", async (req, res) => {
-  try {
-    console.log("Fetching stock data...");
-    const data = await getData();
-    res.json({
-      success: true,
-      data: data,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error("Error fetching stock data:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to fetch stock data",
-      message: error.message,
-    });
-  }
-});
+const calculateTotalProfit = (stocks) => {
+  const profit = stocks.reduce((total, stock) => {
+    return total + parseFloat(stock.profit);
+  }, 0);
 
-// Additional endpoint for just the stock data array
+  return profit;
+};
+
+const calculateTotalValue = (stocks) => {
+  const value = stocks.reduce((total, stock) => {
+    return total + parseFloat(stock.value);
+  }, 0);
+  return value;
+};
+
 app.get("/api/stocks", async (req, res) => {
   try {
-    const data = await getData();
-    res.json(data);
+    const { portfolio } = req.query;
+
+    const stocks = await getData(portfolio);
+
+    const totalProfit = calculateTotalProfit(stocks);
+    const totalValue = calculateTotalValue(stocks);
+    const precentChange = (totalProfit / totalValue) * 100;
+
+    res.json({ data: stocks, totalProfit, totalValue, precentChange });
   } catch (error) {
     console.error("Error fetching stock data:", error);
     res.status(500).json({
