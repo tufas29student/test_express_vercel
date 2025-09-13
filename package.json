@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "concurrently \"nodemon api/index.js\" \"cd ../client && npm run dev\"",
     "start": "node api/index.js"
   },
   "keywords": [],
@@ -19,6 +20,7 @@
     "serverless-http": "^3.2.0"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10"
   }
 }
