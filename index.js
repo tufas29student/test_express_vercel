@@ -42,13 +42,16 @@ app.get("/api/stocks", async (req, res) => {
   try {
     const { portfolio } = req.query;
 
-    const stocks = await getData(portfolio);
+    const { stocks, totalProfit, precentChange } = await getData(portfolio);
 
-    const totalProfit = calculateTotalProfit(stocks);
     const totalValue = calculateTotalValue(stocks);
-    const precentChange = (totalProfit / totalValue) * 100;
 
-    res.json({ data: stocks, totalProfit, totalValue, precentChange });
+    res.json({
+      data: stocks,
+      totalProfit,
+      totalValue,
+      precentChange,
+    });
   } catch (error) {
     console.error("Error fetching stock data:", error);
     res.status(500).json({
