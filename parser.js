@@ -4,6 +4,11 @@ const parseData = (html) => {
   try {
     const $ = cheerio.load(html);
 
+    const dailyChange = $('section[id="infoTable"]')
+      .find('span[id="lblDailyProfit"]')
+      .text()
+      .trim();
+
     const precentChange = $('section[id="section_yields"]')
       .find("tbody")
       .find("tr")
@@ -47,6 +52,7 @@ const parseData = (html) => {
       stocks,
       totalProfit,
       precentChange: parseFloat(precentChange.replace(",", "")),
+      dailyChange: parseFloat(dailyChange.replace(",", "")),
     };
   } catch (error) {
     console.error("Parsing error:", error);
